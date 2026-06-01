@@ -108,101 +108,100 @@ transform:translateY(-150px);
 </div>
 
 <script type="module">
+  // 1. Floating elements code (Butterfly/Flower emoji generation)
+  const items = ["🦋", "🌸", "✨", "🦄", "🎈", "💖"];
 
-// Floating elements code stays intact
-const items=["🦋","🌸","✨","🦄","🎈","💖"];
-
-for(let i=0;i<50;i++){
-  let el=document.createElement("div");
-  el.className="float";
-  el.innerHTML=items[Math.floor(Math.random()*items.length)];
-  el.style.left=Math.random()*100+"vw";
-  el.style.animationDuration=(6+Math.random()*10)+"s";
-  document.body.appendChild(el);
-}
-
-// 1. Firebase CDN Imports for direct web execution
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-
-// 2. Your Verified Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCFIVoKOIiJW4pCBrqXWgsCK2spwuoGXYM",
-  authDomain: "awesome-project-fairy.firebaseapp.com",
-  projectId: "awesome-project-fairy",
-  storageBucket: "awesome-project-fairy.firebasestorage.app",
-  messagingSenderId: "629900355479",
-  appId: "1:629900355479:web:65baaed4b484fdbc6086d2"
-};
-
-// 3. Initialize connection
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const stars = document.querySelectorAll('.star');
-
-// 4. Load calculations globally from the cloud right when page loads
-async function loadGlobalRatings() {
-  try {
-    const querySnapshot = await getDocs(collection(db, "ratings"));
-    let totalVotes = 0;
-    let sumOfRatings = 0;
-
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      if(data.starsSelected) {
-        sumOfRatings += data.starsSelected;
-        totalVotes++;
-      }
-    });
-
-    const average = totalVotes > 0 ? (sumOfRatings / totalVotes).toFixed(1) : "0.0";
-    
-    document.getElementById("avg").innerText = "Average Rating: " + average;
-    document.getElementById("votes").innerText = totalVotes;
-  } catch (error) {
-    console.error("Error loading ratings from Firebase: ", error);
-    document.getElementById("avg").innerText = "Average Rating: 0.0";
+  for (let i = 0; i < 50; i++) {
+    let el = document.createElement("div");
+    el.className = "float";
+    el.innerHTML = items[Math.floor(Math.random() * items.length)];
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.animationDuration = (6 + Math.random() * 10) + "s";
+    document.body.appendChild(el);
   }
-}
 
-// Run loader on startup
-loadGlobalRatings();
+  // 2. Import BOTH Firebase App and Firestore Database from the CDN links
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-// 5. Dynamic Click Listeners attached cleanly in JS
-stars.forEach(star => {
-  star.addEventListener('click', async () => {
-    const ratingValue = parseInt(star.getAttribute('data-value'));
-    
-    // Instantly highlight the active stars locally
-    updateStarUI(ratingValue);
-    
-    // Save to Firestore, then refresh calculations
-    await saveRatingToCloud(ratingValue);
-  });
-});
+  // 3. Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCFIVoKOIiJW4pCBrqXWgsCK2spwuoGXYM",
+    authDomain: "awesome-project-fairy.firebaseapp.com",
+    projectId: "awesome-project-fairy",
+    storageBucket: "awesome-project-fairy.firebasestorage.app",
+    messagingSenderId: "629900355479",
+    appId: "1:629900355479:web:65baaed4b484fdbc6086d2"
+  };
 
-function updateStarUI(rating) {
-  stars.forEach((star, index) => {
-    star.classList.toggle("active", index < rating);
-  });
-}
+  // 4. Initialize Firebase and link the Firestore Database
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-// 6. Push data globally function
-async function saveRatingToCloud(rating) {
-  try {
-    await addDoc(collection(db, "ratings"), {
-      starsSelected: rating,
-      timestamp: new Date()
-    });
-    console.log("Saved globally!");
-    // Refresh calculations instantly on screen
-    loadGlobalRatings();
-  } catch (error) {
-    console.error("Error saving data: ", error);
+  const stars = document.querySelectorAll('.star');
+
+  // 5. Function to load calculations globally from the cloud on startup
+  async function loadGlobalRatings() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "ratings"));
+      let totalVotes = 0;
+      let sumOfRatings = 0;
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.starsSelected) {
+          sumOfRatings += data.starsSelected;
+          totalVotes++;
+        }
+      });
+
+      const average = totalVotes > 0 ? (sumOfRatings / totalVotes).toFixed(1) : "0.0";
+      
+      document.getElementById("avg").innerText = "Average Rating: " + average;
+      document.getElementById("votes").innerText = totalVotes;
+    } catch (error) {
+      console.error("Error loading ratings from Firebase: ", error);
+      document.getElementById("avg").innerText = "Average Rating: 0.0";
+    }
   }
-}
 
+  // Run database fetch instantly when the page opens
+  loadGlobalRatings();
+
+  // 6. Dynamic Star Click Listeners
+  stars.forEach(star => {
+    star.addEventListener('click', async () => {
+      const ratingValue = parseInt(star.getAttribute('data-value'));
+      
+      // Update UI color colors instantly local
+      updateStarUI(ratingValue);
+      
+      // Send the score to the cloud, then pull fresh calculations
+      await saveRatingToCloud(ratingValue);
+    });
+  });
+
+  function updateStarUI(rating) {
+    stars.forEach((star, index) => {
+      star.classList.toggle("active", index < rating);
+    });
+  }
+
+  // 7. Push data globally function
+  async function saveRatingToCloud(rating) {
+    try {
+      await addDoc(collection(db, "ratings"), {
+        starsSelected: rating,
+        timestamp: new Date()
+      });
+      console.log("Saved globally!");
+      
+      // Refresh the screen calculation metrics
+      loadGlobalRatings();
+    } catch (error) {
+      console.error("Error saving data: ", error);
+    }
+  }
 </script>
 
 </body>

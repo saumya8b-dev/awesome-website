@@ -159,6 +159,43 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// --- Your Existing Star Selection Logic ---
+const stars = document.querySelectorAll('.star');
+
+stars.forEach(star => {
+  star.addEventListener('click', () => {
+    const ratingValue = parseInt(star.getAttribute('data-value'));
+    
+    updateStarUI(ratingValue);      // Changes the star colors locally
+    saveRatingToCloud(ratingValue); // Sends the data globally to Firebase!
+  });
+});
+
+function updateStarUI(rating) {
+  stars.forEach(star => {
+    if (star.getAttribute('data-value') <= rating) {
+      star.classList.add('active');
+    } else {
+      star.classList.remove('active');
+    }
+  });
+}
+
+// --- The Global Storage Function ---
+async function saveRatingToCloud(rating) {
+  try {
+    // This creates a global list called "ratings" inside your cloud
+    await addDoc(collection(db, "ratings"), {
+      starsSelected: rating,
+      timestamp: new Date()
+    });
+    console.log("Saved globally!");
+  } catch (error) {
+    console.error("Error saving data: ", error);
+  }
+}
 </script>
 
 </body>

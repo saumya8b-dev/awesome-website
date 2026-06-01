@@ -92,62 +92,38 @@ transform:translateY(-150px);
 <img src="your_photo.jpeg" class="photo">
 
 <div>
-<span class="star" onclick="rate(1)">★</span>
-<span class="star" onclick="rate(2)">★</span>
-<span class="star" onclick="rate(3)">★</span>
-<span class="star" onclick="rate(4)">★</span>
-<span class="star" onclick="rate(5)">★</span>
+<span class="star" data-value="1">★</span>
+<span class="star" data-value="2">★</span>
+<span class="star" data-value="3">★</span>
+<span class="star" data-value="4">★</span>
+<span class="star" data-value="5">★</span>
 </div>
 
-<h2 id="avg">Average Rating: 0.0</h2>
+<h2 id="avg">Average Rating: Loading...</h2>
 
 <p>Votes: <span id="votes">0</span></p>
 
 </div>
 
-<script>
+<script type="module">
 
+// Floating elements code stays intact
 const items=["🦋","🌸","✨","🦄","🎈","💖"];
 
 for(let i=0;i<50;i++){
-
-let el=document.createElement("div");
-
-el.className="float";
-
-el.innerHTML=items[Math.floor(Math.random()*items.length)];
-
-el.style.left=Math.random()*100+"vw";
-
-el.style.animationDuration=(6+Math.random()*10)+"s";
-
-document.body.appendChild(el);
+  let el=document.createElement("div");
+  el.className="float";
+  el.innerHTML=items[Math.floor(Math.random()*items.length)];
+  el.style.left=Math.random()*100+"vw";
+  el.style.animationDuration=(6+Math.random()*10)+"s";
+  document.body.appendChild(el);
 }
 
-let ratings=[];
+// 1. Firebase CDN Imports for direct web execution
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-function rate(v){
-
-ratings.push(v);
-
-let avg=ratings.reduce((a,b)=>a+b,0)/ratings.length;
-
-document.getElementById("avg").innerText=
-"Average Rating: "+avg.toFixed(1);
-
-document.getElementById("votes").innerText=
-ratings.length;
-
-document.querySelectorAll(".star").forEach((s,i)=>{
-s.classList.toggle("active",i<v);
-});
-}
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
+// 2. Your Verified Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCFIVoKOIiJW4pCBrqXWgsCK2spwuoGXYM",
   authDomain: "awesome-project-fairy.firebaseapp.com",
@@ -157,45 +133,74 @@ const firebaseConfig = {
   appId: "1:629900355479:web:65baaed4b484fdbc6086d2"
 };
 
-// Initialize Firebase
+// 3. Initialize connection
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// --- Your Existing Star Selection Logic ---
 const stars = document.querySelectorAll('.star');
 
+// 4. Load calculations globally from the cloud right when page loads
+async function loadGlobalRatings() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "ratings"));
+    let totalVotes = 0;
+    let sumOfRatings = 0;
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      if(data.starsSelected) {
+        sumOfRatings += data.starsSelected;
+        totalVotes++;
+      }
+    });
+
+    const average = totalVotes > 0 ? (sumOfRatings / totalVotes).toFixed(1) : "0.0";
+    
+    document.getElementById("avg").innerText = "Average Rating: " + average;
+    document.getElementById("votes").innerText = totalVotes;
+  } catch (error) {
+    console.error("Error loading ratings from Firebase: ", error);
+    document.getElementById("avg").innerText = "Average Rating: 0.0";
+  }
+}
+
+// Run loader on startup
+loadGlobalRatings();
+
+// 5. Dynamic Click Listeners attached cleanly in JS
 stars.forEach(star => {
-  star.addEventListener('click', () => {
+  star.addEventListener('click', async () => {
     const ratingValue = parseInt(star.getAttribute('data-value'));
     
-    updateStarUI(ratingValue);      // Changes the star colors locally
-    saveRatingToCloud(ratingValue); // Sends the data globally to Firebase!
+    // Instantly highlight the active stars locally
+    updateStarUI(ratingValue);
+    
+    // Save to Firestore, then refresh calculations
+    await saveRatingToCloud(ratingValue);
   });
 });
 
 function updateStarUI(rating) {
-  stars.forEach(star => {
-    if (star.getAttribute('data-value') <= rating) {
-      star.classList.add('active');
-    } else {
-      star.classList.remove('active');
-    }
+  stars.forEach((star, index) => {
+    star.classList.toggle("active", index < rating);
   });
 }
 
-// --- The Global Storage Function ---
+// 6. Push data globally function
 async function saveRatingToCloud(rating) {
   try {
-    // This creates a global list called "ratings" inside your cloud
     await addDoc(collection(db, "ratings"), {
       starsSelected: rating,
       timestamp: new Date()
     });
     console.log("Saved globally!");
+    // Refresh calculations instantly on screen
+    loadGlobalRatings();
   } catch (error) {
     console.error("Error saving data: ", error);
   }
 }
+
 </script>
 
 </body>

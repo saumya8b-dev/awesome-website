@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FairyAdu.com</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Georgia,serif;
+overflow:hidden;
+height:100vh;
+background:linear-gradient(135deg,#f573a5,#fc8be3,#d08eff);
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.card{
+width:min(90%,700px);
+padding:30px;
+border-radius:35px;
+background:rgba(255,255,255,.25);
+backdrop-filter:blur(15px);
+text-align:center;
+box-shadow:0 0 30px rgba(255,255,255,.5);
+z-index:10;
+}
+
+h1{
+font-size:3rem;
+color:white;
+text-shadow:0 0 15px white;
+}
+
+p,h2{
+color:white;
+}
+
+.photo{
+width:250px;
+height:250px;
+border-radius:25px;
+object-fit:cover;
+border:6px solid white;
+margin:15px 0;
+}
+
+.star{
+font-size:45px;
+cursor:pointer;
+color:white;
+transition:.3s;
+}
+
+.active{
+color:gold;
+}
+
+.float{
+position:absolute;
+font-size:30px;
+animation:fly linear infinite;
+opacity:.8;
+}
+
+@keyframes fly{
+0%{
+transform:translateY(110vh);
+}
+100%{
+transform:translateY(-150px);
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>FairyAdu.com</h1>
+
+<p>Welcome to Adu's Fairy Kingdom</p>
+
+<img src="your_photo.jpeg" class="photo">
+
+<div>
+<span class="star" onclick="rate(1)">★</span>
+<span class="star" onclick="rate(2)">★</span>
+<span class="star" onclick="rate(3)">★</span>
+<span class="star" onclick="rate(4)">★</span>
+<span class="star" onclick="rate(5)">★</span>
+</div>
+
+<h2 id="avg">Average Rating: 0.0</h2>
+
+<p>Votes: <span id="votes">0</span></p>
+
+</div>
+
+<script>
+
+const items=["🦋","🌸","✨","🦄","🎈","💖"];
+
+for(let i=0;i<50;i++){
+
+let el=document.createElement("div");
+
+el.className="float";
+
+el.innerHTML=items[Math.floor(Math.random()*items.length)];
+
+el.style.left=Math.random()*100+"vw";
+
+el.style.animationDuration=(6+Math.random()*10)+"s";
+
+document.body.appendChild(el);
+}
+
+let ratings=[];
+
+function rate(v){
+
+ratings.push(v);
+
+let avg=ratings.reduce((a,b)=>a+b,0)/ratings.length;
+
+document.getElementById("avg").innerText=
+"Average Rating: "+avg.toFixed(1);
+
+document.getElementById("votes").innerText=
+ratings.length;
+
+document.querySelectorAll(".star").forEach((s,i)=>{
+s.classList.toggle("active",i<v);
+});
+}
+
+</script>
+
+</body>
+</html>

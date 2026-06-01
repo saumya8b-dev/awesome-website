@@ -142,7 +142,23 @@ document.querySelectorAll(".star").forEach((s,i)=>{
 s.classList.toggle("active",i<v);
 });
 }
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCFIVoKOIiJW4pCBrqXWgsCK2spwuoGXYM",
+  authDomain: "awesome-project-fairy.firebaseapp.com",
+  projectId: "awesome-project-fairy",
+  storageBucket: "awesome-project-fairy.firebasestorage.app",
+  messagingSenderId: "629900355479",
+  appId: "1:629900355479:web:65baaed4b484fdbc6086d2"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 </script>
 
 </body>

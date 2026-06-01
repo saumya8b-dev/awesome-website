@@ -22,15 +22,17 @@ justify-content:center;
 align-items:center;
 }
 
-.card{
-width:min(90%,700px);
-padding:30px;
-border-radius:35px;
-background:rgba(255,255,255,.25);
-backdrop-filter:blur(15px);
-text-align:center;
-box-shadow:0 0 30px rgba(255,255,255,.5);
-z-index:10;
+.card {
+  width: min(90%,700px);
+  padding: 30px;
+  border-radius: 35px;
+  background: rgba(255,255,255,.25);
+  backdrop-filter: blur(15px);
+  text-align: center;
+  box-shadow: 0 0 30px rgba(255,255,255,.5);
+  /* ADD THESE TWO LINES BELOW */
+  position: relative;
+  z-index: 20; 
 }
 
 h1{

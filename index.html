@@ -434,10 +434,11 @@ p, h2 {
     document.body.appendChild(el);
   }
 
-  import { initializeApp } from "https://unpkg.com/@firebase/app@10.0.0/dist/index.esm.js";
+  // FIXED: Swapped to secure jsDelivr network mirrors to completely bypass CORS blocking issues
+  import { initializeApp } from "https://cdn.jsdelivr.net/npm/@firebase/app@10.0.0/dist/index.esm.js";
   import { 
     getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot, doc, updateDoc, increment, serverTimestamp 
-  } from "https://unpkg.com/@firebase/firestore@10.0.0/dist/index.esm.js";
+  } from "https://cdn.jsdelivr.net/npm/@firebase/firestore@10.0.0/dist/index.esm.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCFIVoKOIiJW4pCBrqXWgsCK2spwuoGXYM",
@@ -566,7 +567,7 @@ p, h2 {
   const activeSavedTheme = localStorage.getItem('fairySiteTheme');
   if (activeSavedTheme) window.changeTheme(activeSavedTheme);
 
-  // Global window modal toggle handler logic
+  // Global scope allocation for direct activation triggering
   window.openFairyModal = function() {
     const overlay = document.getElementById('fanclub-overlay');
     const input = document.getElementById('fanclub-username');

@@ -7,121 +7,152 @@
 <title>FairyAdu.com</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-font-family:Georgia,serif;
-overflow:hidden;
-height:100vh;
-background:linear-gradient(135deg,#f573a5,#fc8be3,#d08eff);
-display:flex;
-justify-content:center;
-align-items:center;
+body {
+  font-family: Georgia, serif;
+  overflow: hidden;
+  height: 100vh;
+  background: linear-gradient(135deg, #f573a5, #fc8be3, #d08eff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Navigation area to hold the top button safely */
+.top-nav {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  z-index: 30;
+}
+
+/* Smooth layout container handling alignment and shifts */
+.app-container {
+  display: flex;
+  justify-content: center; /* Initially centers the card */
+  align-items: center;
+  gap: 40px;
+  width: min(95%, 1200px);
+  height: calc(100vh - 120px);
+  margin: 0 auto;
+  position: relative;
 }
 
 .card {
-  width: min(90%,700px);
+  width: min(90%, 500px);
   padding: 30px;
   border-radius: 35px;
-  background: rgba(255,255,255,.25);
+  background: rgba(255, 255, 255, .25);
   backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   text-align: center;
-  box-shadow: 0 0 30px rgba(255,255,255,.5);
-  /* ADD THESE TWO LINES BELOW */
+  box-shadow: 0 0 30px rgba(255, 255, 255, .5);
   position: relative;
   z-index: 20; 
+  flex-shrink: 0;
+  /* Smooth transition movement when layout adjusts */
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-h1{
-font-size:3rem;
-color:white;
-text-shadow:0 0 15px white;
+h1 {
+  font-size: 3rem;
+  color: white;
+  text-shadow: 0 0 15px white;
 }
 
-p,h2{
-color:white;
+p, h2 {
+  color: white;
 }
 
-.photo{
-width:250px;
-height:250px;
-border-radius:25px;
-object-fit:cover;
-border:6px solid white;
-margin:15px 0;
+.photo {
+  width: 220px;
+  height: 220px;
+  border-radius: 25px;
+  object-fit: cover;
+  border: 6px solid white;
+  margin: 15px 0;
 }
 
-.star{
-font-size:45px;
-cursor:pointer;
-color:white;
-transition:.3s;
+.star {
+  font-size: 45px;
+  cursor: pointer;
+  color: white;
+  transition: .3s;
 }
 
-.active{
-color:gold;
+.active {
+  color: gold;
 }
 
-.float{
-position:absolute;
-font-size:30px;
-animation:fly linear infinite;
-opacity:.8;
+.float {
+  position: absolute;
+  font-size: 30px;
+  animation: fly linear infinite;
+  opacity: .8;
+  z-index: 1;
+  pointer-events: none; /* Keeps emojis behind click targets */
 }
 
-@keyframes fly{
-0%{
-transform:translateY(110vh);
+@keyframes fly {
+  0% { transform: translateY(110vh); }
+  100% { transform: translateY(-150px); }
 }
-100%{
-transform:translateY(-150px);
-}
-}
-/* Glassmorphism Container */
+
+/* Glassmorphic Comments Container */
 #comments-section {
-  margin: 30px auto;
-  padding: 25px;
-  max-width: 550px;
-  width: 90%;
-  border-radius: 16px;
-  
-  /* Frosted Glass Effect */
-  background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  
-  /* Subtle border and realistic shadow */
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  max-width: 450px;
+  width: 100%;
+  height: min(550px, 80%);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-  
-  /* Flexbox to keep input down and feed up */
+  padding: 25px;
+  z-index: 20;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  box-sizing: border-box;
+  
+  /* Smooth Slide and Fade Transitions */
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Ensure hidden state still works perfectly */
-.comments-hidden {
-  display: none !important;
+/* Dynamic Hidden State for Sliding Effect without layout breaking */
+#comments-section.comments-hidden {
+  display: flex !important; 
+  max-width: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  opacity: 0;
+  transform: translateX(100px);
+  pointer-events: none;
+  overflow: hidden;
 }
 
-/* Beautiful Title Header */
 .comments-title {
   text-align: center;
   margin: 0;
-  font-family: 'Poppins', sans-serif;
-  color: #4a4a4a;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
   font-size: 1.25rem;
-  letter-spacing: 0.5px;
 }
 
-/* Scrollable Comments Feed Area */
+/* Scrollable Inner Comments Area */
 #comments-list {
-  max-height: 350px;
+  flex: 1;
   overflow-y: auto;
   padding-right: 5px;
   display: flex;
@@ -129,22 +160,19 @@ transform:translateY(-150px);
   gap: 12px;
 }
 
-/* Styling Scrollbars for a seamless look */
 #comments-list::-webkit-scrollbar {
   width: 6px;
 }
 #comments-list::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 10px;
 }
 
-/* Individual Comment Cards inside the Feed */
 .comment-card {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.5);
   padding: 12px 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .comment-card p {
@@ -153,38 +181,36 @@ transform:translateY(-150px);
   color: #333;
   line-height: 1.4;
   word-break: break-word;
+  font-family: system-ui, sans-serif;
 }
 
-/* Bottom Message Form layout */
+/* Bottom Message Panel layout */
 #comment-form {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   padding-top: 15px;
 }
 
-/* Sleek Comment Input Field */
 #comment-input {
   flex: 1;
   padding: 12px 16px;
   border-radius: 25px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.7);
   font-size: 0.95rem;
   outline: none;
   transition: all 0.2s ease;
 }
 
 #comment-input:focus {
-  border-color: #a78bfa; /* Soft purple glow focus */
-  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
   background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
 }
 
-/* Main Post Button Style */
 #submit-comment-btn {
-  background: linear-gradient(135deg, #a78bfa 0%, #c084fc 100%);
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
   color: white;
   border: none;
   padding: 0 20px;
@@ -192,97 +218,81 @@ transform:translateY(-150px);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3);
 }
 
 #submit-comment-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(167, 139, 250, 0.4);
 }
 
-#submit-comment-btn:active {
-  transform: translateY(1px);
-}
-
-/* Modern Pill-Shaped Reaction Buttons */
+/* Interaction Counter Layout */
 .reaction-btn {
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.02);
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
   border-radius: 20px;
   cursor: pointer;
   font-size: 0.85rem;
   margin-right: 8px;
   padding: 5px 12px;
-  color: #555;
+  color: #333;
   transition: all 0.2s ease;
 }
 
 .reaction-btn:hover {
-  background: rgba(167, 139, 250, 0.1);
-  border-color: rgba(167, 139, 250, 0.3);
-  color: #7c3aed;
+  background: rgba(255, 255, 255, 0.8);
 }
 
-.reaction-btn:active {
-  transform: scale(0.95);
-}
-
-/* Global Open/Close Interface Toggle Button */
 #toggle-comments-btn {
-  display: block;
-  margin: 20px auto;
-  background: #222;
-  color: #fff;
+  background: white;
+  color: #f573a5;
   border: none;
-  padding: 10px 24px;
+  padding: 12px 28px;
   border-radius: 30px;
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 #toggle-comments-btn:hover {
-  background: #444;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-
-<h1>FairyAdu.com</h1>
-
-<p>Welcome to Adu's Fairy Kingdom</p>
-
-<img src="your_photo.jpeg" class="photo">
-
-<div>
-<span class="star" data-value="1">★</span>
-<span class="star" data-value="2">★</span>
-<span class="star" data-value="3">★</span>
-<span class="star" data-value="4">★</span>
-<span class="star" data-value="5">★</span>
+<div class="top-nav">
+  <button id="toggle-comments-btn">💬 Show Comments</button>
 </div>
 
-<h2 id="avg">Average Rating: Loading...</h2>
+<div class="app-container">
 
-<p>Votes: <span id="votes">0</span></p>
-
-</div>
-<button id="toggle-comments-btn">💬 Show Comments</button>
-
-<div id="comments-section" class="comments-hidden">
-  <h3 class="comments-title">✨ Community Thoughts ✨</h3>
-  
-  <div id="comments-list"></div>
-
-  <div id="comment-form">
-    <input type="text" id="comment-input" placeholder="Type a lovely comment..." maxlength="250">
-    <button id="submit-comment-btn">Send 🚀</button>
+  <div class="card">
+    <h1>FairyAdu.com</h1>
+    <p>Welcome to Adu's Fairy Kingdom</p>
+    <img src="your_photo.jpeg" class="photo">
+    <div>
+      <span class="star" data-value="1">★</span>
+      <span class="star" data-value="2">★</span>
+      <span class="star" data-value="3">★</span>
+      <span class="star" data-value="4">★</span>
+      <span class="star" data-value="5">★</span>
+    </div>
+    <h2 id="avg">Average Rating: Loading...</h2>
+    <p>Votes: <span id="votes">0</span></p>
   </div>
+
+  <div id="comments-section" class="comments-hidden">
+    <h3 class="comments-title">✨ Community Thoughts ✨</h3>
+    <div id="comments-list"></div>
+    <div id="comment-form">
+      <input type="text" id="comment-input" placeholder="Type a lovely comment..." maxlength="250">
+      <button id="submit-comment-btn">Send 🚀</button>
+    </div>
+  </div>
+
 </div>
 <script type="module">
   // 1. Floating elements code (Butterfly/Flower emoji generation)

@@ -413,7 +413,7 @@ submitBtn.addEventListener('click', async () => {
 
   try {
     // Add document to a new 'comments' collection in Firestore
-    await db.collection('comments').add({
+    await firestoreDb.collection('comments').add({
       text: text,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       likes: 0,

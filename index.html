@@ -435,11 +435,10 @@ p, h2 {
   }
 
   // 2. Import Firebase Modules using stable jsDelivr links
-  import { initializeApp } from "https://cdn.jsdelivr.net/npm/@firebase/app@10.0.0/dist/index.esm.js";
-  import { 
-    getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot, doc, updateDoc, increment, serverTimestamp 
-  } from "https://cdn.jsdelivr.net/npm/@firebase/firestore@10.0.0/dist/index.esm.js";
-
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+import { 
+  getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot, doc, updateDoc, increment, serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
   // 3. Complete Firebase Web App Configuration
   const firebaseConfig = {
     apiKey: "AIzaSyCFIVoKOIiJW4pCBrqXWgsCK2spwuoGXYM",

@@ -396,7 +396,7 @@ p, h2 {
     <h2 id="avg">Average Rating: Loading...</h2>
     <p>Votes: <span id="votes">0</span></p>
     
-    <button id="join-fanclub-btn" style="background: white; color: var(--btn-color); border: none; padding: 10px 22px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s;">✨ Join the Fairy Fanclub ✨</button>
+    <button id="join-fanclub-btn" onclick="openFairyModal()" style="display: inline-block !important; visibility: visible !important; background: white; color: var(--btn-color); border: none; padding: 10px 22px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s;">✨ Join the Fairy Fanclub ✨</button>
   </div>
 
   <div id="comments-section" class="comments-hidden">
@@ -502,7 +502,6 @@ p, h2 {
     }
   }
 
-  // Comments toggles
   const toggleBtn = document.getElementById('toggle-comments-btn');
   const commentsSection = document.getElementById('comments-section');
 
@@ -567,52 +566,52 @@ p, h2 {
   const activeSavedTheme = localStorage.getItem('fairySiteTheme');
   if (activeSavedTheme) window.changeTheme(activeSavedTheme);
 
-  // ==========================================
-  // FIXED FAIRY FANCLUB INTERACTION LOGIC
-  // ==========================================
-  const joinFanclubBtn = document.getElementById('join-fanclub-btn');
-  const fanclubOverlay = document.getElementById('fanclub-overlay');
+  // Global window modal toggle handler logic
+  window.openFairyModal = function() {
+    const overlay = document.getElementById('fanclub-overlay');
+    const input = document.getElementById('fanclub-username');
+    if (overlay) overlay.style.display = 'flex';
+    if (input) input.focus();
+  };
+
   const closeFanclubBtn = document.getElementById('close-fanclub-btn');
+  if (closeFanclubBtn) {
+    closeFanclubBtn.addEventListener('click', () => {
+      document.getElementById('fanclub-overlay').style.display = 'none';
+      document.getElementById('fanclub-username').value = '';
+    });
+  }
+
   const submitFanclubBtn = document.getElementById('submit-fanclub-btn');
-  const fanclubInput = document.getElementById('fanclub-username');
+  if (submitFanclubBtn) {
+    submitFanclubBtn.addEventListener('click', async () => {
+      const fanclubInput = document.getElementById('fanclub-username');
+      const username = fanclubInput.value.trim();
+      if (username === '') return;
 
-  joinFanclubBtn.addEventListener('click', () => {
-    fanclubOverlay.style.display = 'flex';
-    fanclubInput.focus();
-  });
+      try {
+        await addDoc(collection(db, "fanclub"), {
+          username: username,
+          joinedAt: serverTimestamp()
+        });
 
-  closeFanclubBtn.addEventListener('click', () => {
-    fanclubOverlay.style.display = 'none';
-    fanclubInput.value = '';
-  });
+        document.getElementById('fanclub-overlay').innerHTML = `
+          <div class="surprise-box" style="display:block;">
+            <h2>🎉 Welcome to the Club! 🎉</h2>
+            <p style="color:#555; margin-bottom:20px;">Welcome to the circle, <b>${username}</b>! Your name has been written in the stars. ✨</p>
+            <button class="close-surprise-btn" id="finish-fanclub-btn">Yay! 💕</button>
+          </div>
+        `;
 
-  submitFanclubBtn.addEventListener('click', async () => {
-    const username = fanclubInput.value.trim();
-    if (username === '') return;
+        document.getElementById('finish-fanclub-btn').addEventListener('click', () => {
+          location.reload();
+        });
+      } catch (error) {
+        console.error("Error signing up: ", error);
+      }
+    });
+  }
 
-    try {
-      await addDoc(collection(db, "fanclub"), {
-        username: username,
-        joinedAt: serverTimestamp()
-      });
-
-      fanclubOverlay.innerHTML = `
-        <div class="surprise-box" style="display:block;">
-          <h2>🎉 Welcome to the Club! 🎉</h2>
-          <p style="color:#555; margin-bottom:20px;">Welcome to the circle, <b>${username}</b>! Your name has been written in the stars. ✨</p>
-          <button class="close-surprise-btn" id="finish-fanclub-btn">Yay! 💕</button>
-        </div>
-      `;
-
-      document.getElementById('finish-fanclub-btn').addEventListener('click', () => {
-        location.reload();
-      });
-    } catch (error) {
-      console.error("Error signing up: ", error);
-    }
-  });
-
-  // Unique layout target handling coordinates mapping boundaries
   function spawnSpecialEmoji() {
     const specialEl = document.createElement("div");
     specialEl.className = "special-target";

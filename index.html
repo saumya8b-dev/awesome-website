@@ -145,4 +145,508 @@ p, h2 {
   position: absolute;
   font-size: 30px;
   animation: fly linear infinite;
-  opacity:
+  opacity: .8;
+  z-index: 1;
+  pointer-events: none;
+}
+
+@keyframes fly {
+  0% { transform: translateY(110vh); }
+  100% { transform: translateY(-150px); }
+}
+
+/* Unique target emoji style with random script positioning */
+.special-target {
+  position: fixed;
+  font-size: 45px; 
+  cursor: pointer;
+  z-index: 999;
+  animation: pulseGlow 1.5s ease-in-out infinite alternate;
+  user-select: none;
+  transition: opacity 0.3s ease;
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 5px rgba(255,255,255,0.4)); }
+  100% { transform: scale(1.15) rotate(10deg); filter: drop-shadow(0 0 15px gold); }
+}
+
+/* Full-screen magical overlay for the surprise reveal */
+.surprise-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.4s ease;
+}
+
+.surprise-box {
+  background: white;
+  padding: 40px;
+  border-radius: 30px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  border: 3px solid #fc8be3;
+  transform: scale(0);
+  animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.2s;
+}
+
+.surprise-box h2 { color: #f573a5; text-shadow: none; margin-bottom: 10px; font-size: 2rem; }
+.surprise-box p { color: #555; margin-bottom: 20px; font-size: 1.1rem; }
+
+.close-surprise-btn {
+  background: linear-gradient(135deg, #f573a5, #fc8be3);
+  color: white; border: none; padding: 10px 25px;
+  border-radius: 20px; font-weight: bold; cursor: pointer;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popUp { to { transform: scale(1); } }
+
+/* Glassmorphic Comments Container */
+#comments-section {
+  max-width: 450px;
+  width: 100%;
+  height: min(550px, 80%);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  padding: 25px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-sizing: border-box;
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Dynamic Hidden State for Sliding Effect */
+#comments-section.comments-hidden {
+  display: none !important;
+}
+
+.comments-title {
+  text-align: center;
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 1.25rem;
+}
+
+/* Scrollable Inner Comments Area */
+#comments-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#comments-list::-webkit-scrollbar {
+  width: 6px;
+}
+#comments-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.comment-card {
+  background: rgba(255, 255, 255, 0.5);
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.comment-card p {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.4;
+  word-break: break-word;
+  font-family: system-ui, sans-serif;
+}
+
+/* Bottom Message Panel layout */
+#comment-form {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 15px;
+}
+
+#comment-input {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+#comment-input:focus {
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
+}
+
+#submit-comment-btn {
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  color: white;
+  border: none;
+  padding: 0 20px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#submit-comment-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Interaction Counter Layout */
+.reaction-btn {
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-right: 8px;
+  padding: 5px 12px;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.reaction-btn:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+#toggle-comments-btn {
+  background: white;
+  color: var(--btn-color);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+#toggle-comments-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-nav">
+  <button id="toggle-comments-btn">💬 Show Comments</button>
+  
+  <div class="theme-selector">
+    <button class="theme-dot pink-dot" onclick="changeTheme('pink')" title="Pink Theme"></button>
+    <button class="theme-dot purple-dot" onclick="changeTheme('purple')" title="Purple Theme"></button>
+    <button class="theme-dot blue-dot" onclick="changeTheme('blue')" title="Blue Theme"></button>
+  </div>
+</div>
+
+<div class="app-container">
+
+  <div class="card">
+    <h1>FairyAdu.com</h1>
+    <p>Welcome to Adu's Fairy Kingdom</p>
+    <img src="your_photo.jpeg" class="photo">
+    <div>
+      <span class="star" data-value="1">★</span>
+      <span class="star" data-value="2">★</span>
+      <span class="star" data-value="3">★</span>
+      <span class="star" data-value="4">★</span>
+      <span class="star" data-value="5">★</span>
+    </div>
+    <h2 id="avg">Average Rating: Loading...</h2>
+    <p>Votes: <span id="votes">0</span></p>
+  </div>
+
+  <div id="comments-section" class="comments-hidden">
+    <h3 class="comments-title">✨ Community Thoughts ✨</h3>
+    <div id="comments-list"></div>
+    <div id="comment-form">
+      <input type="text" id="comment-input" placeholder="Type a lovely comment..." maxlength="250">
+      <button id="submit-comment-btn">Send 🚀</button>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  // 1. Floating elements code
+  const items = ["🦋", "🌸", "✨", "🦄", "🎈", "💖"];
+
+  for (let i = 0; i < 50; i++) {
+    let el = document.createElement("div");
+    el.className = "float";
+    el.innerHTML = items[Math.floor(Math.random() * items.length)];
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.animationDuration = (6 + Math.random() * 10) + "s";
+    document.body.appendChild(el);
+  }
+
+  // 2. Import elements from standard Web v10 Modular CDN
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+  import { 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    getDocs, 
+    query, 
+    orderBy, 
+    onSnapshot, 
+    doc, 
+    updateDoc, 
+    increment, 
+    serverTimestamp 
+  } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+  // 3. Firebase setup config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCFIVoKOIiJW4pCBrqXWgsCK2spwuoGXYM",
+    authDomain: "awesome-project-fairy.firebaseapp.com",
+    projectId: "awesome-project-fairy",
+    storageBucket: "awesome-project-fairy.firebasestorage.app",
+    messagingSenderId: "629900355479",
+    appId: "1:629900355479:web:65baaed4b484fdbc6086d2"
+  };
+
+  // 4. Initialize Database
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const stars = document.querySelectorAll('.star');
+
+  // 5. Load global score calculations
+  async function loadGlobalRatings() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "ratings"));
+      let totalVotes = 0;
+      let sumOfRatings = 0;
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.starsSelected) {
+          sumOfRatings += data.starsSelected;
+          totalVotes++;
+        }
+      });
+
+      const average = totalVotes > 0 ? (sumOfRatings / totalVotes).toFixed(1) : "0.0";
+      
+      document.getElementById("avg").innerText = "Average Rating: " + average;
+      document.getElementById("votes").innerText = totalVotes;
+    } catch (error) {
+      console.error("Error loading ratings from Firebase: ", error);
+      document.getElementById("avg").innerText = "Average Rating: 0.0";
+    }
+  }
+
+  loadGlobalRatings();
+
+  // 6. Dynamic Star Click Setup
+  stars.forEach(star => {
+    star.addEventListener('click', async () => {
+      const ratingValue = parseInt(star.getAttribute('data-value'));
+      updateStarUI(ratingValue);
+      await saveRatingToCloud(ratingValue);
+    });
+  });
+
+  function updateStarUI(rating) {
+    stars.forEach((star, index) => {
+      star.classList.toggle("active", index < rating);
+    });
+  }
+
+  async function saveRatingToCloud(rating) {
+    try {
+      await addDoc(collection(db, "ratings"), {
+        starsSelected: rating,
+        timestamp: new Date()
+      });
+      loadGlobalRatings();
+    } catch (error) {
+      console.error("Error saving data: ", error);
+    }
+  }
+
+  // ==========================================
+  // COMMENTS FUNCTIONALITY
+  // ==========================================
+
+  // 1. COLLAPSE / EXPAND TOGGLE
+  const toggleBtn = document.getElementById('toggle-comments-btn');
+  const commentsSection = document.getElementById('comments-section');
+
+  toggleBtn.addEventListener('click', () => {
+    commentsSection.classList.toggle('comments-hidden');
+    if (commentsSection.classList.contains('comments-hidden')) {
+      toggleBtn.textContent = '💬 Show Comments';
+    } else {
+      toggleBtn.textContent = '❌ Hide Comments';
+    }
+  });
+
+  // 2. SUBMIT A NEW COMMENT
+  const commentInput = document.getElementById('comment-input');
+  const submitBtn = document.getElementById('submit-comment-btn');
+
+  submitBtn.addEventListener('click', async () => {
+    const text = commentInput.value.trim();
+    if (text === '') return;
+
+    try {
+      await addDoc(collection(db, "comments"), {
+        text: text,
+        timestamp: serverTimestamp(),
+        likes: 0,
+        loves: 0
+      });
+      commentInput.value = ''; 
+    } catch (error) {
+      console.error("Error saving comment: ", error);
+    }
+  });
+
+  // 3. LISTEN REAL-TIME
+  const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
+  
+  onSnapshot(q, (snapshot) => {
+    const commentsList = document.getElementById('comments-list');
+    commentsList.innerHTML = ''; 
+
+    snapshot.forEach((commentDoc) => {
+      const data = commentDoc.data();
+      const commentId = commentDoc.id;
+
+      const card = document.createElement('div');
+      card.className = 'comment-card';
+      
+      card.innerHTML = `
+        <p>${data.text || ""}</p>
+        <button class="reaction-btn" data-id="${commentId}" data-type="likes">👍 ${data.likes || 0}</button>
+        <button class="reaction-btn" data-id="${commentId}" data-type="loves">❤️ ${data.loves || 0}</button>
+      `;
+      commentsList.appendChild(card);
+    });
+  });
+
+  // 4. ATOMIC REACTION CAPTURE EVENT LISTENER
+  document.getElementById('comments-list').addEventListener('click', async (e) => {
+    const targetButton = e.target.closest('.reaction-btn');
+    if (!targetButton) return;
+
+    const id = targetButton.getAttribute('data-id');
+    const reactionType = targetButton.getAttribute('data-type');
+    
+    try {
+      const docRef = doc(db, "comments", id);
+      await updateDoc(docRef, {
+        [reactionType]: increment(1)
+      });
+    } catch (err) {
+      console.error("Error registering active reactions: ", err);
+    }
+  });
+
+  // ==========================================
+  // LOCAL STORAGE THEME SWAPPER
+  // ==========================================
+  window.changeTheme = function(themeName) {
+    document.documentElement.setAttribute('data-theme', themeName);
+    localStorage.setItem('fairySiteTheme', themeName);
+  };
+
+  const activeSavedTheme = localStorage.getItem('fairySiteTheme');
+  if (activeSavedTheme) {
+    window.changeTheme(activeSavedTheme);
+  }
+
+  // ==========================================
+  // PIXEL-PERFECT RANDOM POSITION SYSTEM
+  // ==========================================
+  function spawnSpecialEmoji() {
+    const specialEl = document.createElement("div");
+    specialEl.className = "special-target";
+    specialEl.innerHTML = "🦄✨"; 
+    
+    // Calculate the exact bounding viewport container metrics
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    // Distribute randomly across the complete X/Y available resolution plane
+    const randomX = 50 + Math.random() * (screenWidth - 150);
+    const randomY = 50 + Math.random() * (screenHeight - 150);
+
+    specialEl.style.left = randomX + "px"; 
+    specialEl.style.top = randomY + "px";
+    
+    document.body.appendChild(specialEl);
+
+    specialEl.addEventListener('click', () => {
+      specialEl.remove(); 
+      triggerSurprisePopup();
+    });
+
+    // Clean up and jump locations every 4 seconds if untouched
+    setTimeout(() => {
+      if (document.body.contains(specialEl)) {
+        specialEl.style.opacity = "0"; 
+        setTimeout(() => {
+          specialEl.remove();
+          spawnSpecialEmoji(); 
+        }, 300);
+      }
+    }, 4000); 
+  }
+
+  spawnSpecialEmoji();
+
+  function triggerSurprisePopup() {
+    const overlay = document.createElement("div");
+    overlay.className = "surprise-overlay";
+    
+    overlay.innerHTML = `
+      <div class="surprise-box">
+        <h2>✨ Magical Secret Found! ✨</h2>
+        <p>You caught the enchanted fairy unicorn! Here is a little sprinkle of stardust to brighten up your day. 🌸🌈</p>
+        <button class="close-surprise-btn">Thank You! 💕</button>
+      </div>
+    `;
+    
+    document.body.appendChild(overlay);
+
+    overlay.querySelector('.close-surprise-btn').addEventListener('click', () => {
+      overlay.remove();
+      setTimeout(spawnSpecialEmoji, 3000); 
+    });
+  }
+</script>
+
+</body>
+</html>

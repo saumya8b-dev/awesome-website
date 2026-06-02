@@ -204,7 +204,11 @@ p, h2 {
 #comments-section {
   max-width: 450px;
   width: 100%;
-  height: min(550px, 80%);
+  
+  /* FIXED: This forces it to become scrollable after reaching 550px */
+  max-height: 550px;
+  overflow-y: auto;
+  
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(20px);
@@ -225,7 +229,14 @@ p, h2 {
 #comments-section.comments-hidden {
   display: none !important;
 }
-
+/* Custom scrollbar for the entire comments box */
+#comments-section::-webkit-scrollbar {
+  width: 6px;
+}
+#comments-section::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+}
 .comments-title {
   text-align: center;
   margin: 0;
@@ -385,6 +396,7 @@ p, h2 {
   <div class="card">
     <h1>FairyAdu.com</h1>
     <p>Welcome to Adu's Fairy Kingdom</p>
+    <p>Just a fairy girl collecting stars, spreading sparkle and turning dreams into magic.</p>
     <img src="your_photo.jpeg" class="photo">
     <div>
       <span class="star" data-value="1">★</span>

@@ -311,7 +311,7 @@ db.collection('comments')
 
 // 4. UPDATE GLOBAL REACTION COUNTERS
 window.addReaction = function(id, reactionType) {
-  const docRef = db.collection('comments').document(id);
+  const docRef = db.collection('comments').doc(id);
   
   // Use a transaction or increment function to safely update counts globally
   docRef.update({

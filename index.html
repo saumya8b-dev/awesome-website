@@ -250,6 +250,74 @@ transform:translateY(-150px);
       console.error("Error saving data: ", error);
     }
   }
+// 1. COLLAPSE / EXPAND MECHANISM
+const toggleBtn = document.getElementById('toggle-comments-btn');
+const commentsSection = document.getElementById('comments-section');
+
+toggleBtn.addEventListener('click', () => {
+  commentsSection.classList.toggle('comments-hidden');
+  // Update button text depending on state
+  if (commentsSection.classList.contains('comments-hidden')) {
+    toggleBtn.textContent = '💬 Show Comments';
+  } else {
+    toggleBtn.textContent = '❌ Hide Comments';
+  }
+});
+
+// 2. SUBMIT A NEW COMMENT GLOBALLY
+const commentInput = document.getElementById('comment-input');
+const submitBtn = document.getElementById('submit-comment-btn');
+
+submitBtn.addEventListener('click', async () => {
+  const text = commentInput.value.trim();
+  if (text === '') return; // Don't submit empty comments
+
+  try {
+    // Add document to a new 'comments' collection in Firestore
+    await db.collection('comments').add({
+      text: text,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      likes: 0,
+      loves: 0
+    });
+    commentInput.value = ''; // Clear input field after success
+  } catch (error) {
+    console.error("Error saving comment: ", error);
+  }
+});
+
+// 3. LISTEN FOR LIVE COMMENTS & RENDER THEM WITH REACTIONS
+db.collection('comments')
+  .orderBy('timestamp', 'desc') // Show newest comments first
+  .onSnapshot((snapshot) => {
+    const commentsList = document.getElementById('comments-list');
+    commentsList.innerHTML = ''; // Clear list before rewriting
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const commentId = doc.id;
+
+      // Create a card for each comment
+      const card = document.createElement('div');
+      card.className = 'comment-card';
+      card.innerHTML = `
+        <p>${data.text}</p>
+        <button class="reaction-btn" onclick="addReaction('${commentId}', 'likes')">👍 ${data.likes || 0}</button>
+        <button class="reaction-btn" onclick="addReaction('${commentId}', 'loves')">❤️ ${data.loves || 0}</button>
+      `;
+      commentsList.appendChild(card);
+    });
+  });
+
+// 4. UPDATE GLOBAL REACTION COUNTERS
+window.addReaction = function(id, reactionType) {
+  const docRef = db.collection('comments').document(id);
+  
+  // Use a transaction or increment function to safely update counts globally
+  docRef.update({
+    [reactionType]: firebase.firestore.FieldValue.increment(1)
+  }).catch((err) => console.error("Error updating reaction: ", err));
+};
 </script>
 
 </body>

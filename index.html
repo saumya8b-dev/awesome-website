@@ -717,55 +717,61 @@ p, h2 {
     });
   }
 // ==========================================
-  // FAIRY FANCLUB INTERACTION LOGIC
+  // FIXED FAIRY FANCLUB INTERACTION LOGIC
   // ==========================================
   const joinFanclubBtn = document.getElementById('join-fanclub-btn');
   const fanclubOverlay = document.getElementById('fanclub-overlay');
-  const closeFanclubBtn = document.getElementById('close-club-btn');
+  const closeFanclubBtn = document.getElementById('close-fanclub-btn');
   const submitFanclubBtn = document.getElementById('submit-fanclub-btn');
   const fanclubInput = document.getElementById('fanclub-username');
 
   // Open the registration prompt
-  joinFanclubBtn.addEventListener('click', () => {
-    fanclubOverlay.style.display = 'flex';
-    fanclubInput.focus();
-  });
+  if (joinFanclubBtn) {
+    joinFanclubBtn.addEventListener('click', () => {
+      fanclubOverlay.style.display = 'flex';
+      fanclubInput.focus();
+    });
+  }
 
   // Close the prompt if they hit cancel
-  document.getElementById('close-fanclub-btn').addEventListener('click', () => {
-    fanclubOverlay.style.display = 'none';
-    fanclubInput.value = '';
-  });
+  if (closeFanclubBtn) {
+    closeFanclubBtn.addEventListener('click', () => {
+      fanclubOverlay.style.display = 'none';
+      fanclubInput.value = '';
+    });
+  }
 
   // Send the username directly to your Firebase Firestore cloud
-  submitFanclubBtn.addEventListener('click', async () => {
-    const username = fanclubInput.value.trim();
-    if (username === '') return;
+  if (submitFanclubBtn) {
+    submitFanclubBtn.addEventListener('click', async () => {
+      const username = fanclubInput.value.trim();
+      if (username === '') return;
 
-    try {
-      // Creates a brand new collection called "fanclub" in your DB
-      await addDoc(collection(db, "fanclub"), {
-        username: username,
-        joinedAt: serverTimestamp()
-      });
+      try {
+        // Creates a brand new collection called "fanclub" in your DB
+        await addDoc(collection(db, "fanclub"), {
+          username: username,
+          joinedAt: serverTimestamp()
+        });
 
-      // Show a cute success message
-      fanclubOverlay.innerHTML = `
-        <div class="surprise-box">
-          <h2>🎉 Welcome to the Club! 🎉</h2>
-          <p>Welcome to the circle, <b>${username}</b>! Your name has been written in the stars. ✨</p>
-          <button class="close-surprise-btn" id="finish-fanclub-btn">Yay! 💕</button>
-        </div>
-      `;
+        // Show a cute success message
+        fanclubOverlay.innerHTML = `
+          <div class="surprise-box">
+            <h2>🎉 Welcome to the Club! 🎉</h2>
+            <p>Welcome to the circle, <b>${username}</b>! Your name has been written in the stars. ✨</p>
+            <button class="close-surprise-btn" id="finish-fanclub-btn">Yay! 💕</button>
+          </div>
+        `;
 
-      document.getElementById('finish-fanclub-btn').addEventListener('click', () => {
-        location.reload(); // Quick refresh to update the page cleanly
-      });
+        document.getElementById('finish-fanclub-btn').addEventListener('click', () => {
+          location.reload(); // Quick refresh to clean up the UI
+        });
 
-    } catch (error) {
-      console.error("Error signing up to fanclub: ", error);
-    }
-  });
+      } catch (error) {
+        console.error("Error signing up to fanclub: ", error);
+      }
+    });
+  }
 </script>
 
 </body>

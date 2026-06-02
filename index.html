@@ -107,7 +107,18 @@ transform:translateY(-150px);
 <p>Votes: <span id="votes">0</span></p>
 
 </div>
+<button id="toggle-comments-btn">💬 Show Comments</button>
 
+<div id="comments-section" class="comments-hidden">
+  <h3>Community Thoughts</h3>
+  
+  <div id="comment-form">
+    <input type="text" id="comment-input" placeholder="Write a public comment..." maxlength="250">
+    <button id="submit-comment-btn">Post</button>
+  </div>
+
+  <div id="comments-list"></div>
+</div>
 <script type="module">
   // 1. Floating elements code (Butterfly/Flower emoji generation)
   const items = ["🦋", "🌸", "✨", "🦄", "🎈", "💖"];

@@ -423,8 +423,8 @@ p, h2 {
 </div>
 
 <script type="module">
+  // 1. Floating Elements Setup
   const items = ["🦋", "🌸", "✨", "🦄", "🎈", "💖"];
-
   for (let i = 0; i < 50; i++) {
     let el = document.createElement("div");
     el.className = "float";
@@ -434,12 +434,13 @@ p, h2 {
     document.body.appendChild(el);
   }
 
-  // FIXED: Swapped to secure jsDelivr network mirrors to completely bypass CORS blocking issues
+  // 2. Import Firebase Modules using stable jsDelivr links
   import { initializeApp } from "https://cdn.jsdelivr.net/npm/@firebase/app@10.0.0/dist/index.esm.js";
   import { 
     getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot, doc, updateDoc, increment, serverTimestamp 
   } from "https://cdn.jsdelivr.net/npm/@firebase/firestore@10.0.0/dist/index.esm.js";
 
+  // 3. Complete Firebase Web App Configuration
   const firebaseConfig = {
     apiKey: "AIzaSyCFIVoKOIiJW4pCBrqXWgsCK2spwuoGXYM",
     authDomain: "awesome-project-fairy.firebaseapp.com",
@@ -449,9 +450,11 @@ p, h2 {
     appId: "1:629900355479:web:65baaed4b484fdbc6086d2"
   };
 
+  // 4. Initialize Database connection
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
+  // 5. Star Rating Feature
   const stars = document.querySelectorAll('.star');
 
   async function loadGlobalRatings() {
@@ -469,10 +472,12 @@ p, h2 {
       });
 
       const average = totalVotes > 0 ? (sumOfRatings / totalVotes).toFixed(1) : "0.0";
-      document.getElementById("avg").innerText = "Average Rating: " + average;
-      document.getElementById("votes").innerText = totalVotes;
+      const avgEl = document.getElementById("avg");
+      const votesEl = document.getElementById("votes");
+      if (avgEl) avgEl.innerText = "Average Rating: " + average;
+      if (votesEl) votesEl.innerText = totalVotes;
     } catch (error) {
-      console.error(error);
+      console.error("Rating Load Error:", error);
     }
   }
   loadGlobalRatings();
@@ -499,67 +504,78 @@ p, h2 {
       });
       loadGlobalRatings();
     } catch (error) {
-      console.error(error);
+      console.error("Rating Save Error:", error);
     }
   }
 
+  // 6. Comments Panel Toggle Controller
   const toggleBtn = document.getElementById('toggle-comments-btn');
   const commentsSection = document.getElementById('comments-section');
 
-  toggleBtn.addEventListener('click', () => {
-    commentsSection.classList.toggle('comments-hidden');
-    toggleBtn.textContent = commentsSection.classList.contains('comments-hidden') ? '💬 Show Comments' : '❌ Hide Comments';
-  });
+  if (toggleBtn && commentsSection) {
+    toggleBtn.addEventListener('click', () => {
+      commentsSection.classList.toggle('comments-hidden');
+      toggleBtn.textContent = commentsSection.classList.contains('comments-hidden') ? '💬 Show Comments' : '❌ Hide Comments';
+    });
+  }
 
+  // 7. Post a New Comment
   const commentInput = document.getElementById('comment-input');
   const submitBtn = document.getElementById('submit-comment-btn');
 
-  submitBtn.addEventListener('click', async () => {
-    const text = commentInput.value.trim();
-    if (text === '') return;
-    try {
-      await addDoc(collection(db, "comments"), {
-        text: text,
-        timestamp: serverTimestamp(),
-        likes: 0,
-        loves: 0
-      });
-      commentInput.value = ''; 
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
-  onSnapshot(q, (snapshot) => {
-    const commentsList = document.getElementById('comments-list');
-    commentsList.innerHTML = ''; 
-    snapshot.forEach((commentDoc) => {
-      const data = commentDoc.data();
-      const commentId = commentDoc.id;
-      const card = document.createElement('div');
-      card.className = 'comment-card';
-      card.innerHTML = `
-        <p>${data.text || ""}</p>
-        <button class="reaction-btn" data-id="${commentId}" data-type="likes">👍 ${data.likes || 0}</button>
-        <button class="reaction-btn" data-id="${commentId}" data-type="loves">❤️ ${data.loves || 0}</button>
-      `;
-      commentsList.appendChild(card);
+  if (submitBtn) {
+    submitBtn.addEventListener('click', async () => {
+      const text = commentInput.value.trim();
+      if (text === '') return;
+      try {
+        await addDoc(collection(db, "comments"), {
+          text: text,
+          timestamp: serverTimestamp(),
+          likes: 0,
+          loves: 0
+        });
+        commentInput.value = ''; 
+      } catch (error) {
+        console.error("Comment Save Error:", error);
+      }
     });
-  });
+  }
 
-  document.getElementById('comments-list').addEventListener('click', async (e) => {
-    const targetButton = e.target.closest('.reaction-btn');
-    if (!targetButton) return;
-    const id = targetButton.getAttribute('data-id');
-    const reactionType = targetButton.getAttribute('data-type');
-    try {
-      await updateDoc(doc(db, "comments", id), { [reactionType]: increment(1) });
-    } catch (err) {
-      console.error(err);
-    }
-  });
+  // 8. Stream Real-time Comments List
+  const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
+  const commentsList = document.getElementById('comments-list');
+  
+  if (commentsList) {
+    onSnapshot(q, (snapshot) => {
+      commentsList.innerHTML = ''; 
+      snapshot.forEach((commentDoc) => {
+        const data = commentDoc.data();
+        const commentId = commentDoc.id;
+        const card = document.createElement('div');
+        card.className = 'comment-card';
+        card.innerHTML = `
+          <p>${data.text || ""}</p>
+          <button class="reaction-btn" data-id="${commentId}" data-type="likes">👍 ${data.likes || 0}</button>
+          <button class="reaction-btn" data-id="${commentId}" data-type="loves">❤️ ${data.loves || 0}</button>
+        `;
+        commentsList.appendChild(card);
+      });
+    });
 
+    commentsList.addEventListener('click', async (e) => {
+      const targetButton = e.target.closest('.reaction-btn');
+      if (!targetButton) return;
+      const id = targetButton.getAttribute('data-id');
+      const reactionType = targetButton.getAttribute('data-type');
+      try {
+        await updateDoc(doc(db, "comments", id), { [reactionType]: increment(1) });
+      } catch (err) {
+        console.error("Reaction Error:", err);
+      }
+    });
+  }
+
+  // 9. Theme Memory Management
   window.changeTheme = function(themeName) {
     document.documentElement.setAttribute('data-theme', themeName);
     localStorage.setItem('fairySiteTheme', themeName);
@@ -567,7 +583,7 @@ p, h2 {
   const activeSavedTheme = localStorage.getItem('fairySiteTheme');
   if (activeSavedTheme) window.changeTheme(activeSavedTheme);
 
-  // Global scope allocation for direct activation triggering
+  // 10. Fairy Fanclub System Handles
   window.openFairyModal = function() {
     const overlay = document.getElementById('fanclub-overlay');
     const input = document.getElementById('fanclub-username');
@@ -578,8 +594,10 @@ p, h2 {
   const closeFanclubBtn = document.getElementById('close-fanclub-btn');
   if (closeFanclubBtn) {
     closeFanclubBtn.addEventListener('click', () => {
-      document.getElementById('fanclub-overlay').style.display = 'none';
-      document.getElementById('fanclub-username').value = '';
+      const overlay = document.getElementById('fanclub-overlay');
+      const input = document.getElementById('fanclub-username');
+      if (overlay) overlay.style.display = 'none';
+      if (input) input.value = '';
     });
   }
 
@@ -596,23 +614,30 @@ p, h2 {
           joinedAt: serverTimestamp()
         });
 
-        document.getElementById('fanclub-overlay').innerHTML = `
-          <div class="surprise-box" style="display:block;">
-            <h2>🎉 Welcome to the Club! 🎉</h2>
-            <p style="color:#555; margin-bottom:20px;">Welcome to the circle, <b>${username}</b>! Your name has been written in the stars. ✨</p>
-            <button class="close-surprise-btn" id="finish-fanclub-btn">Yay! 💕</button>
-          </div>
-        `;
-
-        document.getElementById('finish-fanclub-btn').addEventListener('click', () => {
-          location.reload();
-        });
+        const overlay = document.getElementById('fanclub-overlay');
+        if (overlay) {
+          overlay.innerHTML = `
+            <div class="surprise-box" style="display:block;">
+              <h2>🎉 Welcome to the Club! 🎉</h2>
+              <p style="color:#555; margin-bottom:20px;">Welcome to the circle, <b>${username}</b>! Your name has been written in the stars. ✨</p>
+              <button class="close-surprise-btn" id="finish-fanclub-btn">Yay! 💕</button>
+            </div>
+          `;
+          
+          const finishBtn = document.getElementById('finish-fanclub-btn');
+          if (finishBtn) {
+            finishBtn.addEventListener('click', () => {
+              location.reload();
+            });
+          }
+        }
       } catch (error) {
-        console.error("Error signing up: ", error);
+        console.error("Fanclub Registry Error: ", error);
       }
     });
   }
 
+  // 11. Hidden Teleporting Target Logic Mini-game
   function spawnSpecialEmoji() {
     const specialEl = document.createElement("div");
     specialEl.className = "special-target";
@@ -626,7 +651,6 @@ p, h2 {
 
     specialEl.style.left = randomX + "px"; 
     specialEl.style.top = randomY + "px";
-    
     document.body.appendChild(specialEl);
 
     specialEl.addEventListener('click', () => {
@@ -663,6 +687,5 @@ p, h2 {
     });
   }
 </script>
-
 </body>
 </html>

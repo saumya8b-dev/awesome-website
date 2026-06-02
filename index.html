@@ -452,7 +452,19 @@ p, h2 {
   </div>
 
 </div>
-
+<p>Votes: <span id="votes">0</span></p>
+<button id="join-fanclub-btn" style="background: white; color: var(--btn-color); border: none; padding: 10px 22px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s;">✨ Join the Fairy Fanclub ✨</button>
+<div id="fanclub-overlay" class="surprise-overlay" style="display: none;">
+  <div class="surprise-box" style="border-color: #a78bfa;">
+    <h2>🌸 Join the Fanclub 🌸</h2>
+    <p>Enter a magical username to join our fairy circle!</p>
+    <input type="text" id="fanclub-username" placeholder="FairyName123" maxlength="20" style="width: 100%; padding: 12px; border-radius: 20px; border: 1px solid #ddd; margin-bottom: 20px; text-align: center; font-size: 1rem; outline: none;">
+    <div style="display: flex; gap: 10px; justify-content: center;">
+      <button id="submit-fanclub-btn" class="close-surprise-btn" style="background: linear-gradient(135deg, #a78bfa, #c084fc);">Submit 🚀</button>
+      <button id="close-fanclub-btn" class="close-surprise-btn" style="background: #ccc;">Cancel</button>
+    </div>
+  </div>
+</div>
 <script type="module">
   // 1. Floating elements code
   const items = ["🦋", "🌸", "✨", "🦄", "🎈", "💖"];
@@ -704,6 +716,56 @@ p, h2 {
       setTimeout(spawnSpecialEmoji, 3000); 
     });
   }
+// ==========================================
+  // FAIRY FANCLUB INTERACTION LOGIC
+  // ==========================================
+  const joinFanclubBtn = document.getElementById('join-fanclub-btn');
+  const fanclubOverlay = document.getElementById('fanclub-overlay');
+  const closeFanclubBtn = document.getElementById('close-club-btn');
+  const submitFanclubBtn = document.getElementById('submit-fanclub-btn');
+  const fanclubInput = document.getElementById('fanclub-username');
+
+  // Open the registration prompt
+  joinFanclubBtn.addEventListener('click', () => {
+    fanclubOverlay.style.display = 'flex';
+    fanclubInput.focus();
+  });
+
+  // Close the prompt if they hit cancel
+  document.getElementById('close-fanclub-btn').addEventListener('click', () => {
+    fanclubOverlay.style.display = 'none';
+    fanclubInput.value = '';
+  });
+
+  // Send the username directly to your Firebase Firestore cloud
+  submitFanclubBtn.addEventListener('click', async () => {
+    const username = fanclubInput.value.trim();
+    if (username === '') return;
+
+    try {
+      // Creates a brand new collection called "fanclub" in your DB
+      await addDoc(collection(db, "fanclub"), {
+        username: username,
+        joinedAt: serverTimestamp()
+      });
+
+      // Show a cute success message
+      fanclubOverlay.innerHTML = `
+        <div class="surprise-box">
+          <h2>🎉 Welcome to the Club! 🎉</h2>
+          <p>Welcome to the circle, <b>${username}</b>! Your name has been written in the stars. ✨</p>
+          <button class="close-surprise-btn" id="finish-fanclub-btn">Yay! 💕</button>
+        </div>
+      `;
+
+      document.getElementById('finish-fanclub-btn').addEventListener('click', () => {
+        location.reload(); // Quick refresh to update the page cleanly
+      });
+
+    } catch (error) {
+      console.error("Error signing up to fanclub: ", error);
+    }
+  });
 </script>
 
 </body>

@@ -155,15 +155,16 @@ p, h2 {
   100% { transform: translateY(-150px); }
 }
 
-/* Unique target emoji style with random script positioning */
+/* Unique target emoji style - absolute priority override layout constraints */
 .special-target {
-  position: fixed;
-  font-size: 45px; 
-  cursor: pointer;
-  z-index: 999;
-  animation: pulseGlow 1.5s ease-in-out infinite alternate;
-  user-select: none;
+  position: fixed !important;
+  font-size: 45px !important; 
+  cursor: pointer !important;
+  z-index: 9999 !important;
+  margin: 0 !important;
+  user-select: none !important;
   transition: opacity 0.3s ease;
+  animation: pulseGlow 1.5s ease-in-out infinite alternate !important;
 }
 
 @keyframes pulseGlow {
@@ -182,7 +183,7 @@ p, h2 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10000;
   animation: fadeIn 0.4s ease;
 }
 
@@ -595,14 +596,15 @@ p, h2 {
     specialEl.className = "special-target";
     specialEl.innerHTML = "🦄✨"; 
     
-    // Calculate the exact bounding viewport container metrics
+    // Explicitly grab the absolute inner width and height boundaries of the window layout context
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
-    // Distribute randomly across the complete X/Y available resolution plane
-    const randomX = 50 + Math.random() * (screenWidth - 150);
-    const randomY = 50 + Math.random() * (screenHeight - 150);
+    // Distribute randomly across the full screen dimensions, leaving a 150px padding safety frame
+    const randomX = Math.floor(Math.random() * (screenWidth - 150)) + 50;
+    const randomY = Math.floor(Math.random() * (screenHeight - 150)) + 50;
 
+    // Hardcode placement maps safely bypassing inherited parent flex alignments
     specialEl.style.left = randomX + "px"; 
     specialEl.style.top = randomY + "px";
     
@@ -613,7 +615,7 @@ p, h2 {
       triggerSurprisePopup();
     });
 
-    // Clean up and jump locations every 4 seconds if untouched
+    // Clean up and warp locations every 4 seconds if untouched
     setTimeout(() => {
       if (document.body.contains(specialEl)) {
         specialEl.style.opacity = "0"; 

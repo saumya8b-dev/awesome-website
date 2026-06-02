@@ -250,6 +250,83 @@ p, h2 {
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
+/* Define default variables at the root (Default is your original pink/purple gradient) */
+:root {
+  --bg-gradient: linear-gradient(135deg, #f573a5, #fc8be3, #d08eff);
+  --btn-color: #f573a5;
+}
+
+/* Purple Theme Definition */
+[data-theme="purple"] {
+  --bg-gradient: linear-gradient(135deg, #a78bfa, #c084fc, #818cf8);
+  --btn-color: #7c3aed;
+}
+
+/* Blue Theme Definition */
+[data-theme="blue"] {
+  --bg-gradient: linear-gradient(135deg, #7dd3fc, #38bdf8, #a5b4fc);
+  --btn-color: #0284c7;
+}
+
+/* Pink Theme Definition (Explicitly back to original) */
+[data-theme="pink"] {
+  --bg-gradient: linear-gradient(135deg, #f573a5, #fc8be3, #d08eff);
+  --btn-color: #f573a5;
+}
+
+/* Apply the dynamic variable to the body background */
+body {
+  font-family: Georgia, serif;
+  overflow: hidden;
+  height: 100vh;
+  background: var(--bg-gradient); /* <-- Powered by our theme switcher! */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  transition: background 0.5s ease; /* Makes background transition smooth */
+}
+
+/* Dynamically color the main button based on the theme */
+#toggle-comments-btn {
+  background: white;
+  color: var(--btn-color); /* <-- Changes color automatically! */
+  border: none;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Theme Panel Layout */
+.theme-selector {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+/* Little circular clickable theme dots */
+.theme-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid white;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: transform 0.2s;
+}
+
+.theme-dot:hover {
+  transform: scale(1.2);
+}
+
+.pink-dot { background: #fc8be3; }
+.purple-dot { background: #c084fc; }
+.blue-dot { background: #38bdf8; }
 </style>
 </head>
 
@@ -257,6 +334,12 @@ p, h2 {
 
 <div class="top-nav">
   <button id="toggle-comments-btn">💬 Show Comments</button>
+  
+  <div class="theme-selector">
+    <button class="theme-dot pink-dot" onclick="changeTheme('pink')" title="Pink Theme"></button>
+    <button class="theme-dot purple-dot" onclick="changeTheme('purple')" title="Purple Theme"></button>
+    <button class="theme-dot blue-dot" onclick="changeTheme('blue')" title="Blue Theme"></button>
+  </div>
 </div>
 
 <div class="app-container">
@@ -464,6 +547,24 @@ p, h2 {
       console.error("Error registering active reactions: ", err);
     }
   });
+  // ==========================================
+  // LOCAL STORAGE THEME SWAPPER
+  // ==========================================
+  
+  // 1. Define the Global Theme Changer function
+  window.changeTheme = function(themeName) {
+    // Inject the theme attribute straight into the root <html> tag
+    document.documentElement.setAttribute('data-theme', themeName);
+    
+    // Lock it down into the browser's persistent local memory
+    localStorage.setItem('fairySiteTheme', themeName);
+  };
+
+  // 2. Check for a saved theme instantly on page boot up
+  const activeSavedTheme = localStorage.getItem('fairySiteTheme');
+  if (activeSavedTheme) {
+    window.changeTheme(activeSavedTheme);
+  }
 </script>
 </body>
 </html>

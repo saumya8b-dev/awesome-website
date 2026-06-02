@@ -421,7 +421,11 @@ p, h2 {
     </div>
   </div>
 </div>
-
+<div id="fanclub-list-container" style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.3); text-align: left;">
+  <h4 style="color: white; font-family: system-ui, sans-serif; font-size: 0.95rem; margin-bottom: 10px; text-align: center; letter-spacing: 1px;">✨ CURRENT MEMBERS ✨</h4>
+  <div id="fanclub-members-list" style="max-height: 120px; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding-right: 5px;">
+    </div>
+</div>
 <script type="module">
   // 1. Floating Elements Setup
   const items = ["🦋", "🌸", "✨", "🦄", "🎈", "💖"];
@@ -683,6 +687,45 @@ import {
     overlay.querySelector('.close-surprise-btn').addEventListener('click', () => {
       overlay.remove();
       setTimeout(spawnSpecialEmoji, 3000); 
+    });
+  }
+// ==========================================
+  // REAL-TIME FAIRY FANCLUB MEMBERS LIST
+  // ==========================================
+  const fanclubMembersList = document.getElementById('fanclub-members-list');
+  
+  if (fanclubMembersList) {
+    // Query the fanclub collection sorted by oldest to newest members
+    const fanclubQuery = query(collection(db, "fanclub"), orderBy("joinedAt", "asc"));
+    
+    onSnapshot(fanclubQuery, (snapshot) => {
+      fanclubMembersList.innerHTML = ''; // Clear out the placeholder loading text
+      
+      if (snapshot.empty) {
+        fanclubMembersList.innerHTML = '<p style="font-size: 0.85rem; opacity: 0.7; text-align: center; width: 100%;">Be the first fairy to join! 🌸</p>';
+        return;
+      }
+
+      snapshot.forEach((memberDoc) => {
+        const data = memberDoc.data();
+        const memberName = data.username || "Anonymous Fairy";
+        
+        // Create a cute pastel badge for each name
+        const badge = document.createElement('span');
+        badge.style.cssText = `
+          background: rgba(255, 255, 255, 0.4);
+          color: #333;
+          padding: 4px 12px;
+          border-radius: 15px;
+          font-size: 0.85rem;
+          font-family: system-ui, sans-serif;
+          font-weight: 500;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+          animation: fadeIn 0.3s ease;
+        `;
+        badge.innerText = `🌸 ${memberName}`;
+        fanclubMembersList.appendChild(badge);
+      });
     });
   }
 </script>

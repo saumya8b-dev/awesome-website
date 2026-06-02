@@ -81,41 +81,170 @@ transform:translateY(110vh);
 transform:translateY(-150px);
 }
 }
-/* Container styling */
+/* Glassmorphism Container */
 #comments-section {
-  margin-top: 20px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  max-width: 500px;
+  margin: 30px auto;
+  padding: 25px;
+  max-width: 550px;
+  width: 90%;
+  border-radius: 16px;
+  
+  /* Frosted Glass Effect */
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  /* Subtle border and realistic shadow */
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  
+  /* Flexbox to keep input down and feed up */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-/* Class to handle the collapsing functionality */
+/* Ensure hidden state still works perfectly */
 .comments-hidden {
   display: none !important;
 }
 
-/* Individual comment layout */
-.comment-card {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 10px;
+/* Beautiful Title Header */
+.comments-title {
+  text-align: center;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #4a4a4a;
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
 }
 
-/* Reaction buttons styling */
-.reaction-btn {
-  background: none;
+/* Scrollable Comments Feed Area */
+#comments-list {
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Styling Scrollbars for a seamless look */
+#comments-list::-webkit-scrollbar {
+  width: 6px;
+}
+#comments-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+/* Individual Comment Cards inside the Feed */
+.comment-card {
+  background: rgba(255, 255, 255, 0.6);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.comment-card p {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Bottom Message Form layout */
+#comment-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding-top: 15px;
+}
+
+/* Sleek Comment Input Field */
+#comment-input {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 25px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+#comment-input:focus {
+  border-color: #a78bfa; /* Soft purple glow focus */
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+  background: #fff;
+}
+
+/* Main Post Button Style */
+#submit-comment-btn {
+  background: linear-gradient(135deg, #a78bfa 0%, #c084fc 100%);
+  color: white;
   border: none;
+  padding: 0 20px;
+  border-radius: 25px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 1rem;
-  margin-right: 10px;
-  padding: 2px 5px;
-  transition: transform 0.1s;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3);
+}
+
+#submit-comment-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(167, 139, 250, 0.4);
+}
+
+#submit-comment-btn:active {
+  transform: translateY(1px);
+}
+
+/* Modern Pill-Shaped Reaction Buttons */
+.reaction-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-right: 8px;
+  padding: 5px 12px;
+  color: #555;
+  transition: all 0.2s ease;
+}
+
+.reaction-btn:hover {
+  background: rgba(167, 139, 250, 0.1);
+  border-color: rgba(167, 139, 250, 0.3);
+  color: #7c3aed;
 }
 
 .reaction-btn:active {
-  transform: scale(1.2);
+  transform: scale(0.95);
+}
+
+/* Global Open/Close Interface Toggle Button */
+#toggle-comments-btn {
+  display: block;
+  margin: 20px auto;
+  background: #222;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#toggle-comments-btn:hover {
+  background: #444;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 </style>
 </head>
@@ -146,14 +275,14 @@ transform:translateY(-150px);
 <button id="toggle-comments-btn">💬 Show Comments</button>
 
 <div id="comments-section" class="comments-hidden">
-  <h3>Community Thoughts</h3>
+  <h3 class="comments-title">✨ Community Thoughts ✨</h3>
   
-  <div id="comment-form">
-    <input type="text" id="comment-input" placeholder="Write a public comment..." maxlength="250">
-    <button id="submit-comment-btn">Post</button>
-  </div>
-
   <div id="comments-list"></div>
+
+  <div id="comment-form">
+    <input type="text" id="comment-input" placeholder="Type a lovely comment..." maxlength="250">
+    <button id="submit-comment-btn">Send 🚀</button>
+  </div>
 </div>
 <script type="module">
   // 1. Floating elements code (Butterfly/Flower emoji generation)

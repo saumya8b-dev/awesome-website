@@ -13,25 +13,21 @@
   box-sizing: border-box;
 }
 
-/* Define default variables at the root (Default is your original pink/purple gradient) */
 :root {
   --bg-gradient: linear-gradient(135deg, #f573a5, #fc8be3, #d08eff);
   --btn-color: #f573a5;
 }
 
-/* Purple Theme Definition */
 [data-theme="purple"] {
   --bg-gradient: linear-gradient(135deg, #a78bfa, #c084fc, #818cf8);
   --btn-color: #7c3aed;
 }
 
-/* Blue Theme Definition */
 [data-theme="blue"] {
   --bg-gradient: linear-gradient(135deg, #7dd3fc, #38bdf8, #a5b4fc);
   --btn-color: #0284c7;
 }
 
-/* Pink Theme Definition */
 [data-theme="pink"] {
   --bg-gradient: linear-gradient(135deg, #f573a5, #fc8be3, #d08eff);
   --btn-color: #f573a5;
@@ -39,17 +35,16 @@
 
 body {
   font-family: Georgia, serif;
-  overflow: hidden;
-  height: 100vh;
+  overflow-x: hidden;
   background: var(--bg-gradient);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   transition: background 0.5s ease;
+  min-height: 100vh;
 }
 
-/* Navigation area to hold the top buttons safely */
 .top-nav {
   text-align: center;
   margin-top: 25px;
@@ -57,20 +52,13 @@ body {
   z-index: 30;
 }
 
-/* Theme Panel Layout inside top navigation */
 .theme-selector {
   display: flex;
   justify-content: center;
   gap: 12px;
   margin-top: 15px;
 }
-h1 {
-    font-size: 1.8rem; /* Brought down from 2.2rem to fit cleanly on one line */
-    letter-spacing: -0.5px; /* Squeezes letters slightly closer together */
-    word-break: break-word; /* Prevents text from clipping if the phone is tiny */
-  }
 
-/* Little circular clickable theme dots */
 .theme-dot {
   width: 24px;
   height: 24px;
@@ -89,14 +77,13 @@ h1 {
 .purple-dot { background: #c084fc; }
 .blue-dot { background: #38bdf8; }
 
-/* Smooth layout container handling alignment and shifts */
 .app-container {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 40px;
   width: min(95%, 1200px);
-  height: calc(100vh - 120px);
+  min-height: calc(100vh - 120px);
   margin: 0 auto;
   position: relative;
 }
@@ -117,7 +104,8 @@ h1 {
 }
 
 h1 {
-  font-size: 3rem;
+  font-size: clamp(1.5rem, 6vw, 2.5rem); 
+  line-height: 1.2;
   color: white;
   text-shadow: 0 0 15px white;
 }
@@ -160,7 +148,6 @@ p, h2 {
   100% { transform: translateY(-150px); }
 }
 
-/* Unique target emoji style - absolute priority override layout constraints */
 .special-target {
   position: fixed !important;
   font-size: 45px !important; 
@@ -177,7 +164,6 @@ p, h2 {
   100% { transform: scale(1.15) rotate(10deg); filter: drop-shadow(0 0 15px gold); }
 }
 
-/* Full-screen magical overlay for the surprise reveal */
 .surprise-overlay {
   position: fixed;
   top: 0; left: 0; width: 100vw; height: 100vh;
@@ -215,7 +201,6 @@ p, h2 {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popUp { to { transform: scale(1); } }
 
-/* Glassmorphic Comments Container */
 #comments-section {
   max-width: 450px;
   width: 100%;
@@ -237,7 +222,6 @@ p, h2 {
   transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Dynamic Hidden State for Sliding Effect */
 #comments-section.comments-hidden {
   display: none !important;
 }
@@ -251,7 +235,6 @@ p, h2 {
   font-size: 1.25rem;
 }
 
-/* Scrollable Inner Comments Area */
 #comments-list {
   flex: 1;
   overflow-y: auto;
@@ -285,7 +268,6 @@ p, h2 {
   font-family: system-ui, sans-serif;
 }
 
-/* Bottom Message Panel layout */
 #comment-form {
   display: flex;
   gap: 10px;
@@ -325,7 +307,6 @@ p, h2 {
   transform: translateY(-1px);
 }
 
-/* Interaction Counter Layout */
 .reaction-btn {
   background: rgba(255, 255, 255, 0.4);
   border: none;
@@ -359,54 +340,30 @@ p, h2 {
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
-/* ==========================================
-   MOBILE-FRIENDLY RESPONSIVE STYLES
-   ========================================== */
+
 @media (max-width: 768px) {
   body {
-    /* Allow the page to scroll vertically on phones since components will stack */
     overflow-y: auto; 
-    height: auto;
     padding-bottom: 40px;
   }
-
   .app-container {
-    /* Stack card and comments vertically instead of horizontally */
     flex-direction: column; 
     justify-content: flex-start;
     gap: 25px;
-    height: auto;
     margin-top: 20px;
   }
-
   .card {
-    width: 95%; /* Take up most of the screen width on phones */
+    width: 95%;
     padding: 20px;
   }
-
-  h1 {
-    font-size: 2.2rem; /* Shrink the title slightly so it doesn't wrap awkwardly */
-  }
-
   .photo {
-    width: 160px; /* Scale down the photo a bit for smaller displays */
+    width: 160px;
     height: 160px;
   }
-
   #comments-section {
-    max-width: 95%; /* Make the comment section match the card width */
-    height: 450px; /* Lock a reasonable scrolling height for mobile */
+    max-width: 95%;
+    height: 450px;
   }
-}
-.app-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 40px;
-  width: min(95%, 1200px);
-  min-height: calc(100vh - 120px); /* Changed from height to min-height */
-  margin: 0 auto;
-  position: relative;
 }
 </style>
 </head>
@@ -428,9 +385,7 @@ p, h2 {
   <div class="card">
     <h1>FairyAdu.com</h1>
     <p>Welcome to Adu's Fairy Kingdom</p>
-    <p>Just a fairy girl collecting stars, spreading sparkle, and turning dreams into magic.</p>
     <img src="your_photo.jpeg" class="photo">
-    
     <div>
       <span class="star" data-value="1">★</span>
       <span class="star" data-value="2">★</span>
@@ -440,6 +395,8 @@ p, h2 {
     </div>
     <h2 id="avg">Average Rating: Loading...</h2>
     <p>Votes: <span id="votes">0</span></p>
+    
+    <button id="join-fanclub-btn" style="background: white; color: var(--btn-color); border: none; padding: 10px 22px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s;">✨ Join the Fairy Fanclub ✨</button>
   </div>
 
   <div id="comments-section" class="comments-hidden">
@@ -452,12 +409,11 @@ p, h2 {
   </div>
 
 </div>
-<p>Votes: <span id="votes">0</span></p>
-<button id="join-fanclub-btn" style="background: white; color: var(--btn-color); border: none; padding: 10px 22px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s;">✨ Join the Fairy Fanclub ✨</button>
+
 <div id="fanclub-overlay" class="surprise-overlay" style="display: none;">
   <div class="surprise-box" style="border-color: #a78bfa;">
     <h2>🌸 Join the Fanclub 🌸</h2>
-    <p>Enter a magical username to join our fairy circle!</p>
+    <p style="color: #666; margin-bottom: 15px;">Enter a magical username to join our fairy circle!</p>
     <input type="text" id="fanclub-username" placeholder="FairyName123" maxlength="20" style="width: 100%; padding: 12px; border-radius: 20px; border: 1px solid #ddd; margin-bottom: 20px; text-align: center; font-size: 1rem; outline: none; color: #333;">
     <div style="display: flex; gap: 10px; justify-content: center;">
       <button id="submit-fanclub-btn" class="close-surprise-btn" style="background: linear-gradient(135deg, #a78bfa, #c084fc);">Submit 🚀</button>
@@ -465,8 +421,8 @@ p, h2 {
     </div>
   </div>
 </div>
+
 <script type="module">
-  // 1. Floating elements code
   const items = ["🦋", "🌸", "✨", "🦄", "🎈", "💖"];
 
   for (let i = 0; i < 50; i++) {
@@ -478,23 +434,11 @@ p, h2 {
     document.body.appendChild(el);
   }
 
-  // 2. Import elements from standard Web v10 Modular CDN
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+  import { initializeApp } from "https://unpkg.com/@firebase/app@10.0.0/dist/index.esm.js";
   import { 
-    getFirestore, 
-    collection, 
-    addDoc, 
-    getDocs, 
-    query, 
-    orderBy, 
-    onSnapshot, 
-    doc, 
-    updateDoc, 
-    increment, 
-    serverTimestamp 
-  } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+    getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot, doc, updateDoc, increment, serverTimestamp 
+  } from "https://unpkg.com/@firebase/firestore@10.0.0/dist/index.esm.js";
 
-  // 3. Firebase setup config
   const firebaseConfig = {
     apiKey: "AIzaSyCFIVoKOIiJW4pCBrqXWgsCK2spwuoGXYM",
     authDomain: "awesome-project-fairy.firebaseapp.com",
@@ -504,13 +448,11 @@ p, h2 {
     appId: "1:629900355479:web:65baaed4b484fdbc6086d2"
   };
 
-  // 4. Initialize Database
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
   const stars = document.querySelectorAll('.star');
 
-  // 5. Load global score calculations
   async function loadGlobalRatings() {
     try {
       const querySnapshot = await getDocs(collection(db, "ratings"));
@@ -526,18 +468,14 @@ p, h2 {
       });
 
       const average = totalVotes > 0 ? (sumOfRatings / totalVotes).toFixed(1) : "0.0";
-      
       document.getElementById("avg").innerText = "Average Rating: " + average;
       document.getElementById("votes").innerText = totalVotes;
     } catch (error) {
-      console.error("Error loading ratings from Firebase: ", error);
-      document.getElementById("avg").innerText = "Average Rating: 0.0";
+      console.error(error);
     }
   }
-
   loadGlobalRatings();
 
-  // 6. Dynamic Star Click Setup
   stars.forEach(star => {
     star.addEventListener('click', async () => {
       const ratingValue = parseInt(star.getAttribute('data-value'));
@@ -560,35 +498,25 @@ p, h2 {
       });
       loadGlobalRatings();
     } catch (error) {
-      console.error("Error saving data: ", error);
+      console.error(error);
     }
   }
 
-  // ==========================================
-  // COMMENTS FUNCTIONALITY
-  // ==========================================
-
-  // 1. COLLAPSE / EXPAND TOGGLE
+  // Comments toggles
   const toggleBtn = document.getElementById('toggle-comments-btn');
   const commentsSection = document.getElementById('comments-section');
 
   toggleBtn.addEventListener('click', () => {
     commentsSection.classList.toggle('comments-hidden');
-    if (commentsSection.classList.contains('comments-hidden')) {
-      toggleBtn.textContent = '💬 Show Comments';
-    } else {
-      toggleBtn.textContent = '❌ Hide Comments';
-    }
+    toggleBtn.textContent = commentsSection.classList.contains('comments-hidden') ? '💬 Show Comments' : '❌ Hide Comments';
   });
 
-  // 2. SUBMIT A NEW COMMENT
   const commentInput = document.getElementById('comment-input');
   const submitBtn = document.getElementById('submit-comment-btn');
 
   submitBtn.addEventListener('click', async () => {
     const text = commentInput.value.trim();
     if (text === '') return;
-
     try {
       await addDoc(collection(db, "comments"), {
         text: text,
@@ -598,24 +526,19 @@ p, h2 {
       });
       commentInput.value = ''; 
     } catch (error) {
-      console.error("Error saving comment: ", error);
+      console.error(error);
     }
   });
 
-  // 3. LISTEN REAL-TIME
   const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
-  
   onSnapshot(q, (snapshot) => {
     const commentsList = document.getElementById('comments-list');
     commentsList.innerHTML = ''; 
-
     snapshot.forEach((commentDoc) => {
       const data = commentDoc.data();
       const commentId = commentDoc.id;
-
       const card = document.createElement('div');
       card.className = 'comment-card';
-      
       card.innerHTML = `
         <p>${data.text || ""}</p>
         <button class="reaction-btn" data-id="${commentId}" data-type="likes">👍 ${data.likes || 0}</button>
@@ -625,54 +548,82 @@ p, h2 {
     });
   });
 
-  // 4. ATOMIC REACTION CAPTURE EVENT LISTENER
   document.getElementById('comments-list').addEventListener('click', async (e) => {
     const targetButton = e.target.closest('.reaction-btn');
     if (!targetButton) return;
-
     const id = targetButton.getAttribute('data-id');
     const reactionType = targetButton.getAttribute('data-type');
-    
     try {
-      const docRef = doc(db, "comments", id);
-      await updateDoc(docRef, {
-        [reactionType]: increment(1)
-      });
+      await updateDoc(doc(db, "comments", id), { [reactionType]: increment(1) });
     } catch (err) {
-      console.error("Error registering active reactions: ", err);
+      console.error(err);
     }
   });
 
-  // ==========================================
-  // LOCAL STORAGE THEME SWAPPER
-  // ==========================================
   window.changeTheme = function(themeName) {
     document.documentElement.setAttribute('data-theme', themeName);
     localStorage.setItem('fairySiteTheme', themeName);
   };
-
   const activeSavedTheme = localStorage.getItem('fairySiteTheme');
-  if (activeSavedTheme) {
-    window.changeTheme(activeSavedTheme);
-  }
+  if (activeSavedTheme) window.changeTheme(activeSavedTheme);
 
   // ==========================================
-  // PIXEL-PERFECT RANDOM POSITION SYSTEM
+  // FIXED FAIRY FANCLUB INTERACTION LOGIC
   // ==========================================
+  const joinFanclubBtn = document.getElementById('join-fanclub-btn');
+  const fanclubOverlay = document.getElementById('fanclub-overlay');
+  const closeFanclubBtn = document.getElementById('close-fanclub-btn');
+  const submitFanclubBtn = document.getElementById('submit-fanclub-btn');
+  const fanclubInput = document.getElementById('fanclub-username');
+
+  joinFanclubBtn.addEventListener('click', () => {
+    fanclubOverlay.style.display = 'flex';
+    fanclubInput.focus();
+  });
+
+  closeFanclubBtn.addEventListener('click', () => {
+    fanclubOverlay.style.display = 'none';
+    fanclubInput.value = '';
+  });
+
+  submitFanclubBtn.addEventListener('click', async () => {
+    const username = fanclubInput.value.trim();
+    if (username === '') return;
+
+    try {
+      await addDoc(collection(db, "fanclub"), {
+        username: username,
+        joinedAt: serverTimestamp()
+      });
+
+      fanclubOverlay.innerHTML = `
+        <div class="surprise-box" style="display:block;">
+          <h2>🎉 Welcome to the Club! 🎉</h2>
+          <p style="color:#555; margin-bottom:20px;">Welcome to the circle, <b>${username}</b>! Your name has been written in the stars. ✨</p>
+          <button class="close-surprise-btn" id="finish-fanclub-btn">Yay! 💕</button>
+        </div>
+      `;
+
+      document.getElementById('finish-fanclub-btn').addEventListener('click', () => {
+        location.reload();
+      });
+    } catch (error) {
+      console.error("Error signing up: ", error);
+    }
+  });
+
+  // Unique layout target handling coordinates mapping boundaries
   function spawnSpecialEmoji() {
     const specialEl = document.createElement("div");
     specialEl.className = "special-target";
     specialEl.innerHTML = "🦄✨"; 
     
-    // Explicitly grab the absolute inner width and height boundaries of the window layout context
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
-    // Distribute randomly across the full screen dimensions, leaving a 150px padding safety frame
     const randomX = Math.floor(Math.random() * (screenWidth - 150)) + 50;
     const randomY = Math.floor(Math.random() * (screenHeight - 150)) + 50;
 
-    // Hardcode placement maps safely bypassing inherited parent flex alignments
     specialEl.style.left = randomX + "px"; 
     specialEl.style.top = randomY + "px";
     
@@ -683,7 +634,6 @@ p, h2 {
       triggerSurprisePopup();
     });
 
-    // Clean up and warp locations every 4 seconds if untouched
     setTimeout(() => {
       if (document.body.contains(specialEl)) {
         specialEl.style.opacity = "0"; 
@@ -694,13 +644,11 @@ p, h2 {
       }
     }, 4000); 
   }
-
   spawnSpecialEmoji();
 
   function triggerSurprisePopup() {
     const overlay = document.createElement("div");
     overlay.className = "surprise-overlay";
-    
     overlay.innerHTML = `
       <div class="surprise-box">
         <h2>✨ Magical Secret Found! ✨</h2>
@@ -708,68 +656,10 @@ p, h2 {
         <button class="close-surprise-btn">Thank You! 💕</button>
       </div>
     `;
-    
     document.body.appendChild(overlay);
-
     overlay.querySelector('.close-surprise-btn').addEventListener('click', () => {
       overlay.remove();
       setTimeout(spawnSpecialEmoji, 3000); 
-    });
-  }
-// ==========================================
-  // FIXED FAIRY FANCLUB INTERACTION LOGIC
-  // ==========================================
-  const joinFanclubBtn = document.getElementById('join-fanclub-btn');
-  const fanclubOverlay = document.getElementById('fanclub-overlay');
-  const closeFanclubBtn = document.getElementById('close-fanclub-btn');
-  const submitFanclubBtn = document.getElementById('submit-fanclub-btn');
-  const fanclubInput = document.getElementById('fanclub-username');
-
-  // Open the registration prompt
-  if (joinFanclubBtn) {
-    joinFanclubBtn.addEventListener('click', () => {
-      fanclubOverlay.style.display = 'flex';
-      fanclubInput.focus();
-    });
-  }
-
-  // Close the prompt if they hit cancel
-  if (closeFanclubBtn) {
-    closeFanclubBtn.addEventListener('click', () => {
-      fanclubOverlay.style.display = 'none';
-      fanclubInput.value = '';
-    });
-  }
-
-  // Send the username directly to your Firebase Firestore cloud
-  if (submitFanclubBtn) {
-    submitFanclubBtn.addEventListener('click', async () => {
-      const username = fanclubInput.value.trim();
-      if (username === '') return;
-
-      try {
-        // Creates a brand new collection called "fanclub" in your DB
-        await addDoc(collection(db, "fanclub"), {
-          username: username,
-          joinedAt: serverTimestamp()
-        });
-
-        // Show a cute success message
-        fanclubOverlay.innerHTML = `
-          <div class="surprise-box">
-            <h2>🎉 Welcome to the Club! 🎉</h2>
-            <p>Welcome to the circle, <b>${username}</b>! Your name has been written in the stars. ✨</p>
-            <button class="close-surprise-btn" id="finish-fanclub-btn">Yay! 💕</button>
-          </div>
-        `;
-
-        document.getElementById('finish-fanclub-btn').addEventListener('click', () => {
-          location.reload(); // Quick refresh to clean up the UI
-        });
-
-      } catch (error) {
-        console.error("Error signing up to fanclub: ", error);
-      }
     });
   }
 </script>

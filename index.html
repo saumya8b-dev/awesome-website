@@ -328,7 +328,7 @@ p, h2 {
 
   // 4. Initialize Database
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  const db = getFirestore(app); // This is our database variable!
 
   const stars = document.querySelectorAll('.star');
 
@@ -387,7 +387,7 @@ p, h2 {
   }
 
   // ==========================================
-  // FIXED COMMENTS FUNCTIONALITY (UPGRADED TO V10 MODULAR)
+  // FIXED COMMENTS FUNCTIONALITY (ALL USING 'db')
   // ==========================================
 
   // 1. COLLAPSE / EXPAND TOGGLE
@@ -412,7 +412,6 @@ p, h2 {
     if (text === '') return;
 
     try {
-      // Uses the native Modular v10 addDoc structure
       await addDoc(collection(db, "comments"), {
         text: text,
         timestamp: serverTimestamp(),
@@ -425,7 +424,7 @@ p, h2 {
     }
   });
 
-  // 3. LISTEN REAL-TIME AND BUILD FEED PIPELINE
+  // 3. LISTEN REAL-TIME (Fixed to use 'db')
   const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
   
   onSnapshot(q, (snapshot) => {
@@ -439,7 +438,6 @@ p, h2 {
       const card = document.createElement('div');
       card.className = 'comment-card';
       
-      // Inject nodes into card
       card.innerHTML = `
         <p>${data.text || ""}</p>
         <button class="reaction-btn" data-id="${commentId}" data-type="likes">👍 ${data.likes || 0}</button>
@@ -449,7 +447,7 @@ p, h2 {
     });
   });
 
-  // 4. ATOMIC REACTION CAPTURE EVENT LISTENER
+  // 4. ATOMIC REACTION CAPTURE EVENT LISTENER (Fixed to use 'db')
   document.getElementById('comments-list').addEventListener('click', async (e) => {
     const targetButton = e.target.closest('.reaction-btn');
     if (!targetButton) return;
@@ -458,7 +456,6 @@ p, h2 {
     const reactionType = targetButton.getAttribute('data-type');
     
     try {
-      // Creates atomic safe incrementation via reference docs mapping
       const docRef = doc(db, "comments", id);
       await updateDoc(docRef, {
         [reactionType]: increment(1)
@@ -468,6 +465,5 @@ p, h2 {
     }
   });
 </script>
-
 </body>
 </html>

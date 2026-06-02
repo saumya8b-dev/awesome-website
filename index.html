@@ -354,6 +354,55 @@ p, h2 {
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
+/* ==========================================
+   MOBILE-FRIENDLY RESPONSIVE STYLES
+   ========================================== */
+@media (max-width: 768px) {
+  body {
+    /* Allow the page to scroll vertically on phones since components will stack */
+    overflow-y: auto; 
+    height: auto;
+    padding-bottom: 40px;
+  }
+
+  .app-container {
+    /* Stack card and comments vertically instead of horizontally */
+    flex-direction: column; 
+    justify-content: flex-start;
+    gap: 25px;
+    height: auto;
+    margin-top: 20px;
+  }
+
+  .card {
+    width: 95%; /* Take up most of the screen width on phones */
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 2.2rem; /* Shrink the title slightly so it doesn't wrap awkwardly */
+  }
+
+  .photo {
+    width: 160px; /* Scale down the photo a bit for smaller displays */
+    height: 160px;
+  }
+
+  #comments-section {
+    max-width: 95%; /* Make the comment section match the card width */
+    height: 450px; /* Lock a reasonable scrolling height for mobile */
+  }
+}
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  width: min(95%, 1200px);
+  min-height: calc(100vh - 120px); /* Changed from height to min-height */
+  margin: 0 auto;
+  position: relative;
+}
 </style>
 </head>
 

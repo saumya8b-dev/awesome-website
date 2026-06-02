@@ -426,7 +426,7 @@ submitBtn.addEventListener('click', async () => {
 });
 
 // 3. LISTEN FOR LIVE COMMENTS & RENDER THEM WITH REACTIONS
-db.collection('comments')
+firestoreDb.collection('comments')
   .orderBy('timestamp', 'desc') // Show newest comments first
   .onSnapshot((snapshot) => {
     const commentsList = document.getElementById('comments-list');
